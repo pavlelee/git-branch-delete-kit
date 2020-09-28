@@ -54,6 +54,7 @@ export async function trackedBranchs(): Promise<Map<string, string>> {
                     const matched = line.match(/(.+)\s[A-Za-z0-9]{8}\s\[(.+)\]/);
                     if (matched && matched.length === 3) {
                         tracked.set(matched[1], matched[2]);
+                        tracked.set(matched[2], matched[1]);
                     }
                 });
 

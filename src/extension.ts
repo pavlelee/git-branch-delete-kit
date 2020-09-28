@@ -23,32 +23,38 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		const pick = vscode.window.showQuickPick(branchs());
 
-		pick.then(async (branch?: string) => {
-			if (!branch) {
+		pick.then(async (select?: string) => {
+			if (!select) {
 				return;
 			}
 	
 			const tracked = await trackedBranchs();
+			let branch = select.startsWith('remotes')?
+				select.replace('remotes/', ''):
+				select;
 	
-			if (branch.startsWith('remotes')) {
-				return await safeDeleteRemoteBranch(branch);
-			}
+			select.startsWith('remotes')? 
+				await safeDeleteRemoteBranch(branch): 
+				await safeDeleteLocalBranch(branch);
 
-			await safeDeleteLocalBranch(branch);
-	
 			if (!tracked.has(branch)) {
 				return;
 			}
+
+			const trackedBranch = tracked.get(branch)!;
+			const placeHolder = select.startsWith('remotes')? 
+				`Delete tracking branch local ${trackedBranch}`: 
+				`Delete tracking branch remote ${trackedBranch}`;
 	
-			const confirm = vscode.window.showQuickPick([YES, NO]);
+			const confirm = vscode.window.showQuickPick([YES, NO], {placeHolder: placeHolder});
 			confirm.then(async (val?: string) => {
 				if (val !== YES) {
 					return;
 				}
 
-				const remote = tracked.get(branch)!;
-
-				await safeDeleteRemoteBranch(remote);
+				select.startsWith('remotes')? 
+					await safeDeleteLocalBranch(trackedBranch): 
+					await safeDeleteRemoteBranch(trackedBranch);
 			});
 		});
 	});

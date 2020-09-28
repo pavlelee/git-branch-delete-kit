@@ -23,17 +23,37 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		const pick = vscode.window.showQuickPick(branchs());
 
-		pick.then(deleteBranch);
+		pick.then(async (branch?: string) => {
+			if (!branch) {
+				return;
+			}
+	
+			const tracked = await trackedBranchs();
+	
+			if (branch.startsWith('remotes')) {
+				return await safeDeleteRemoteBranch(branch);
+			}
+
+			await safeDeleteLocalBranch(branch);
+	
+			if (!tracked.has(branch)) {
+				return;
+			}
+	
+			const confirm = vscode.window.showQuickPick([YES, NO]);
+			confirm.then(async (val?: string) => {
+				if (val !== YES) {
+					return;
+				}
+
+				const remote = tracked.get(branch)!;
+
+				await safeDeleteRemoteBranch(remote);
+			});
+		});
 	});
 
-	const deleteBranch = async (branch?: string) => {
-		
-		if (!branch) {
-			return;
-		}
-
-		const tracked = await trackedBranchs();
-
+	const safeDeleteLocalBranch = async (branch: string) => {
 		try {
 			console.log('git delete local branch', branch);
 			await deleteLocalBranch(branch);
@@ -41,26 +61,16 @@ export function activate(context: vscode.ExtensionContext) {
 		} catch(err) {
 			return vscode.window.showErrorMessage(err.toString());
 		}
+	};
 
-		if (!tracked.has(branch)) {
-			return;
+	const safeDeleteRemoteBranch = async (branch: string) => {
+		try {
+			console.log('git delete remote branch', branch);
+			await deleteRemoteBranch(branch);
+			vscode.window.showInformationMessage(`git delete remote branch ${branch} success!`);
+		} catch(err) {
+			return vscode.window.showErrorMessage(err.toString());
 		}
-
-		const confirm = vscode.window.showQuickPick([YES, NO]);
-		confirm.then(async (val?: string) => {
-			try {
-				if (val !== YES) {
-					return;
-				}
-				const remote = tracked.get(branch)!;
-				console.log('git delete remote branch', remote);
-				await deleteRemoteBranch(remote);
-				vscode.window.showInformationMessage(`git delete remote branch ${remote} success!`);
-			} catch(err) {
-				return vscode.window.showErrorMessage(err.toString());
-			}
-		});
-		
 	};
 
 	context.subscriptions.push(disposable);

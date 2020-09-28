@@ -1,10 +1,11 @@
 import * as child_process from 'child_process';
 import * as vscode from 'vscode';
 import * as vscodeGit from 'vscode.git';
+import { Branch } from './model';
 
 const gitAPI: vscodeGit.API = vscode.extensions.getExtension('vscode.git')!.exports.getAPI(1);
 
-export async function branchs(): Promise<Array<string>> {
+export async function branchs(): Promise<Map<string, Branch>> {
     return new Promise((resolve, reject) => {
         child_process.exec(`${gitAPI.git.path} branch -a`, {
             cwd: vscode.workspace.rootPath
@@ -18,12 +19,16 @@ export async function branchs(): Promise<Array<string>> {
 
             console.log(stdout);
 
-            const branchs: Array<string> = stdout
-                .split('\n')
+            let branchs = new Map<string, Branch>();
+            stdout.split('\n')
                 .filter(line => line && line.search("HEAD") === -1)
                 .map(line => {
                     line = line.replace(/^\*?\s+/g, '');
-                    return line;
+                    let name = line.startsWith('remotes')?
+					line.replace('remotes/', ''):
+					line;
+                    
+                    branchs.set(name, {name: name, isRemote: line.startsWith('remotes'), tracked: ''});
                 });
                 
             resolve(branchs);
@@ -53,8 +58,10 @@ export async function trackedBranchs(): Promise<Map<string, string>> {
                     line = line.replace(/^\*?\s+/g, '');
                     const matched = line.match(/(.+)\s[A-Za-z0-9]{8}\s\[(.+)\]/);
                     if (matched && matched.length === 3) {
-                        tracked.set(matched[1], matched[2]);
-                        tracked.set(matched[2], matched[1]);
+                        const source = matched[1].replace(/\s+/g, '');
+                        const dist = matched[2].replace(/\s+/g, '');
+                        tracked.set(source, dist);
+                        tracked.set(dist, source);
                     }
                 });
 

@@ -1,27 +1,31 @@
 # git-branch-delete-kit README
 
-This is a plugin that automatically deletes remote branches when deleting local divisions
+This is a plugin that delete branch and prompt to delete tracked branch
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Delete no tracked local branch
+- Delete no tracked remote branch
+- Delete local branch prompt delete tracked remote branch
+- Delete remote branch prompt delete tracked local branch
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- vscode.git
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+No Settings
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+...
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.3
 
-### 1.0.0
-
-Initial release of git delete tracked branch 
+- Delete no tracked local branch
+- Delete no tracked remote branch
+- Delete local branch prompt delete tracked remote branch
+- Delete remote branch prompt delete tracked local branch

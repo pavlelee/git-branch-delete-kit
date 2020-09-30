@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			});
 
-			const pick = vscode.window.showQuickPick(items);
+			const pick = vscode.window.showQuickPick(items, {placeHolder: 'Select the branch you want to delete.'});
 			pick.then(async (select?: string) => {
 				if (!select) {
 					return;
@@ -57,8 +57,8 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 
 					const placeHolder = trackedBranch.isRemote? 
-						`Delete tracking branch local ${trackedBranch}`: 
-						`Delete tracking branch remote ${trackedBranch}`;
+						`Delete tracking branch local ${trackedBranch}.`: 
+						`Delete tracking branch remote ${trackedBranch}.`;
 			
 					const confirm = vscode.window.showQuickPick([YES, NO], {placeHolder: placeHolder});
 					confirm.then(async (val?: string) => {

@@ -2,6 +2,8 @@
 
 This is a plugin that delete branch and prompt to delete tracked branch
 
+Usage `command + p`, choice `GDBK: Delete branch`
+
 ## Features
 
 - Delete no tracked local branch

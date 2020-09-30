@@ -23,6 +23,10 @@ No Settings
 
 ## Release Notes
 
+### 0.0.4
+
+- 📃docs(quickqick): add placeholder
+
 ### 0.0.3
 
 - Delete no tracked local branch

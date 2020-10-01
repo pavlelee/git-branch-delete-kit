@@ -57,8 +57,8 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 
 					const placeHolder = trackedBranch.isRemote? 
-						`Delete tracking branch local ${trackedBranch}.`: 
-						`Delete tracking branch remote ${trackedBranch}.`;
+						`Delete tracking branch local ${trackedBranch.name}.`: 
+						`Delete tracking branch remote ${trackedBranch.name}.`;
 			
 					const confirm = vscode.window.showQuickPick([YES, NO], {placeHolder: placeHolder});
 					confirm.then(async (val?: string) => {

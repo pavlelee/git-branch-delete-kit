@@ -38,7 +38,7 @@ export async function branchs(): Promise<Map<string, Branch>> {
 
 export async function trackedBranchs(): Promise<Map<string, string>> {
     return new Promise((resolve, reject) => {
-        child_process.exec(`${gitAPI.git.path} branch -vv`, {
+        child_process.exec(`${gitAPI.git.path} branch -vv|sed 's/^*//g'|awk '{print $1,$3}'`, {
             cwd: vscode.workspace.rootPath
         }, (error, stdout, stderr) => {
             if (error) {
@@ -56,7 +56,7 @@ export async function trackedBranchs(): Promise<Map<string, string>> {
                 .filter(line => line)
                 .map(line => {
                     line = line.replace(/^\*?\s+/g, '');
-                    const matched = line.match(/(.+)\s[A-Za-z0-9]{8}\s\[(.+)\]/);
+                    const matched = line.match(/(.+)\s\[(.+)\]/);
                     if (matched && matched.length === 3) {
                         const source = matched[1].replace(/\s+/g, '');
                         const dist = matched[2].replace(/\s+/g, '');

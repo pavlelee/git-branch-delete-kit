@@ -2,7 +2,7 @@
 	"name": "git-branch-delete-kit",
 	"displayName": "Git branch delete kit",
 	"description": "Ask whether to delete the remote branch while deleting the local branch.",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"publisher": "pavlelee",
 	"engines": {
 		"vscode": "^1.46.0"

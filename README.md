@@ -25,6 +25,10 @@ No Settings
 
 ## Release Notes
 
+t### 0.0.5
+
+- 🐞fix(command): fix tracked branch matching rules
+
 ### 0.0.4
 
 - 📃docs(quickqick): add placeholder
